@@ -7,8 +7,12 @@ USE analytics_api;
 DROP TABLE IF EXISTS pageana;
 DROP TABLE IF EXISTS code_ecran;
 DROP TABLE IF EXISTS code_action;
+DROP TABLE IF EXISTS user;
 
-
+CREATE TABLE user(
+    idUser INT PRIMARY KEY AUTO_INCREMENT,
+    nom VARCHAR(30)
+);
 -- Table code_ecran 
 CREATE TABLE code_ecran(
     id_code_ecran INT PRIMARY KEY AUTO_INCREMENT,
@@ -75,5 +79,6 @@ CREATE TABLE pageana(
 
 ALTER TABLE pageana ADD FOREIGN KEY (code_ecran) REFERENCES code_ecran(id_code_ecran);
 ALTER TABLE pageana ADD FOREIGN KEY (code_action) REFERENCES code_action(id_code_action);
+ALTER TABLE pageana ADD FOREIGN KEY (id_utilisateur) REFERENCES user(idUser);
 
 
