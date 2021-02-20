@@ -113,14 +113,14 @@ class db_connection {
                 $resultat = " Utilisateur Ajouter. ";
             } 
         }  
-        return  $this->affichageJson( $resultat ); 
+         $this->affichageJson( $resultat ); 
     }
 
     // Création d'un token utilisateur
     public function creationTokenUtilisateur( $nom, $password ) {
         include_once('../tokenJwt.php');
         $token = new Token;
-        return $this->affichageJson($token->generatejwtToken($nom, $password )   ) ;
+        $this->affichageJson($token->generatejwtToken($nom, $password )) ;
     }
 
 
@@ -139,9 +139,14 @@ class db_connection {
         $request_prepared = $this->mysql_connection->prepare("SELECT count(nom) from user where nom = '$nom' and password ='$password' ");
         if ($request_prepared->execute( )) { 
             $request_row = $request_prepared->fetch();
-            if( $request_row[0] > 0 ){ return $this->creationTokenUtilisateur( $nom, $password ); }
+            if( $request_row[0] > 0 )
+                $this->creationTokenUtilisateur( $nom, $password );
+            else
+                 $this->affichageJson(array("Mot de passe / login incorrect"));
         } 
-        return false;
+        else{
+            $this->affichageJson("Probleme dans execution de la requete connection utilisateur");
+        }
     }
  
 

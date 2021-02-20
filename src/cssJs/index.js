@@ -1,9 +1,10 @@
 $(document).ready(function () {
 
     // Permet d'integrer le token à toutes les entête des requetes 
+    // dans la section "Authorization"
     $.ajaxSetup({
         beforeSend: function (xhr) {
-            xhr.setRequestHeader('TOKEN', $('#token').val());
+            xhr.setRequestHeader('Authorization', $('#token').val());
         }
     });
 
@@ -84,6 +85,8 @@ $(document).ready(function () {
 
     })
 
+    // obtenir la liste des pageana
+    $('#listePageana').on('click',listPageana);
 
     // Ajout d'une pageana
     $('#ajouts').on('click', function () {
@@ -123,8 +126,9 @@ $(document).ready(function () {
             data: 'nom=' + $('#nomConnection').val() + '&password=' + $('#passwordConnection').val() + '&call=ConnectionUser',
             dataType: 'json'
         }).done(function (response) {
-            alert("reception");
-            alert(response);
+            
+            console.log("Token de l'utilisateur : " + response);
+            document.querySelector("#token").value = response;
         })
     })
 
@@ -135,7 +139,7 @@ $(document).ready(function () {
             method: "GET",
             dataType: "json",
         }).done(function (response) {
-            alert(response);
+            alert(JSON.stringify(response));
         })
 
     })

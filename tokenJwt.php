@@ -2,7 +2,7 @@
 
 class Token {
 
-    private $secretKey = 123;
+    private $secretKey = 1846857485489451;
 
 
     public function __construct() {
@@ -16,7 +16,10 @@ class Token {
         $header = json_encode(['typ' => 'JWT', 'alg' => 'HS256']);
 
         // Create token payload as a JSON string
-        $payload = json_encode(['user_name' => $userName, 'user_password' => $userPassword]);
+        $date = new DateTime();
+        $token_date_creation =  $date->getTimestamp();
+        $token_date_expiration = $token_date_creation + 5;
+        $payload = json_encode(['user_name' => $userName, 'user_password' => $userPassword, 'iat' => $token_date_creation, 'exp' => $token_date_expiration]);
 
         // Encode Header to Base64Url String
         $base64UrlHeader = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($header));
@@ -37,8 +40,8 @@ class Token {
     }
 
 
-
-    // fonction qui permet de verifier si un JWT token est valide
+    // fonction qui permet de verifier si un JWT token est valide (signature cohérente)
+    // @jwt : le token a verifier
     public function checkjwtToken($jwt){
         $jwt_is_valid = false;
 
@@ -63,6 +66,27 @@ class Token {
         return $jwt_is_valid;
     }
 
+    // Fonction qui permet de savoir si un token est encore valide en fonctin de sa date d'expiration
+    // @token : le token à verifier
+    public function checkjwtTokenExpirationDate($token){
+       
+        $jwt_array = explode('.',$token); // Array qui contient la structure du token ( [0] = header / [1] = payload / [2] = signature)
+        $jwt_decode_payload = base64_decode($jwt_array[1]);
+        $array_payload =json_decode( $jwt_decode_payload);
+        $expiration_date =  $array_payload->{'exp'};
+
+        // date actuelle 
+        $date = new DateTime();
+
+        if($expiration_date > $date->getTimestamp())
+            return true;
+        else
+            return false;
+    }
+
+    public function tokenValid($token){
+        return $this->checkjwtTokenExpirationDate($token) && $this->checkjwtToken($token);
+    }
   
 }
 
