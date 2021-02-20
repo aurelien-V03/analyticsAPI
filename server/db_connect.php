@@ -119,7 +119,7 @@ class db_connection {
     // Création d'un token utilisateur
     public function creationTokenUtilisateur( $nom, $password ) {
         include_once('../tokenJwt.php');
-        $token = new Token;
+        $token = new TokenService;
         $this->affichageJson($token->generatejwtToken($nom, $password )) ;
     }
 

@@ -1,9 +1,9 @@
 <?php 
 
-class Token {
+class TokenService {
 
+    // Code secret utilisé par l'algorithme 
     private $secretKey = 1846857485489451;
-
 
     public function __construct() {
        
@@ -11,6 +11,7 @@ class Token {
 
 
     // Fonction Générant un token avec le nom et password d'un utilsiateur et une cle secrete
+    // le token a une duree de vie de 5 minutes (@token_date_expiration)
     public function generatejwtToken($userName,$userPassword){
         // Create token header as a JSON string
         $header = json_encode(['typ' => 'JWT', 'alg' => 'HS256']);
@@ -18,7 +19,7 @@ class Token {
         // Create token payload as a JSON string
         $date = new DateTime();
         $token_date_creation =  $date->getTimestamp();
-        $token_date_expiration = $token_date_creation + 5;
+        $token_date_expiration = $token_date_creation + 300; 
         $payload = json_encode(['user_name' => $userName, 'user_password' => $userPassword, 'iat' => $token_date_creation, 'exp' => $token_date_expiration]);
 
         // Encode Header to Base64Url String
@@ -42,7 +43,7 @@ class Token {
 
     // fonction qui permet de verifier si un JWT token est valide (signature cohérente)
     // @jwt : le token a verifier
-    public function checkjwtToken($jwt){
+    public function checkjwtTokenSignature($jwt){
         $jwt_is_valid = false;
 
         $jwt_array = explode('.',$jwt); // Array qui contient la structure du token ( [0] = header / [1] = payload / [2] = signature)
@@ -84,8 +85,10 @@ class Token {
             return false;
     }
 
+    // retourne true si le token passé en parametre est valide (signature + pas perimé)
+    //@token : le token a vérifier
     public function tokenValid($token){
-        return $this->checkjwtTokenExpirationDate($token) && $this->checkjwtToken($token);
+        return $this->checkjwtTokenExpirationDate($token) && $this->checkjwtTokenSignature($token);
     }
   
 }

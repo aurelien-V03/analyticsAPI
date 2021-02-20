@@ -86,12 +86,19 @@
               <div class="col-lg-3 col-md-3 col-xs-3 col-sm-3">  </div>
             </div>
 
-
-            <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6">
+          <div class="row">
+             <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6">
                 <label >Token de l'utilisateur</label>
                 <textarea class="form-control"  type="text" id="token" style="width:100%; height:150px"></textarea>
                 <button type="button" class="btn btn-primary" id="Verificationtoken">Verifier Token</button> 
               </div>
+              <div class="col-lg-6 col-md-6 col-xs-6 col-sm-6">
+                <div id="userTokenStatus"></div>
+              </div>
+
+          </div>
+          
+            
 
 
         </div>

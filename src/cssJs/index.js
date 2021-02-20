@@ -139,7 +139,7 @@ $(document).ready(function () {
             method: "GET",
             dataType: "json",
         }).done(function (response) {
-            alert(JSON.stringify(response));
+            $('#userTokenStatus').html(JSON.stringify(response));
         })
 
     })
