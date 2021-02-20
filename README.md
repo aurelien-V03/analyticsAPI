@@ -1,7 +1,7 @@
 
 Auteurs : Aurelien Vallet - Alexis Escudero
 
-Contexte : Développement d'un API REST dans le cadre de la M1 MIAGE
+Contexte : Développement d'une API REST dans le cadre de la M1 MIAGE
 
 Description : Ce projet met à disposition une API REST permettant à un utilisateur d'intérragir
 avec une base de donnée MySQL, la base de donnée contient des informations concernant des intéractions 
