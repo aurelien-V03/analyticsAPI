@@ -18,13 +18,8 @@ $(document).ready(function () {
         })
             // Si la requete réussis.
             .done(function (response) {
+                console.log( response);
                 let data = JSON.stringify(response);
-                /*
-                let c = jQuery.parseJSON(data);
-                let html = ' ';
-                for (var i = 0; i < c.length; i++) {
-                    html = html + 'id_pageana  ' + c[i].id_pageana + ' libelle_action ' + c[i].libelle_action + ' <br>'
-                }*/
                 $("#res").html(data);
             })
 
@@ -50,10 +45,6 @@ $(document).ready(function () {
 
 
 
-
-
-
-
     // **************************************************************
     // Interactions utilisateur 
     // **************************************************************
@@ -75,7 +66,7 @@ $(document).ready(function () {
             dataType: "json",
         })
             .done(function (response) {
-                
+                console.log( response);
                 
 
                 $("#resDelete").html(JSON.stringify(response));
@@ -98,6 +89,7 @@ $(document).ready(function () {
             dataType: 'json'
         })
             .done(function (response) {
+                console.log( response);
                 listPageana();
                 $("#resAddPageana").html(JSON.stringify(response));
             })
@@ -112,6 +104,7 @@ $(document).ready(function () {
             data: 'nom=' + $('#nomInsription').val() + '&password=' + $('#passwordInsription').val() + '&call=inscriptionUser',
             dataType: 'json'
         }).done(function (response) {
+            console.log( response);
             alert(response);
         })
 
@@ -126,7 +119,7 @@ $(document).ready(function () {
             data: 'nom=' + $('#nomConnection').val() + '&password=' + $('#passwordConnection').val() + '&call=ConnectionUser',
             dataType: 'json'
         }).done(function (response) {
-            
+            console.log( response);
             console.log("Token de l'utilisateur : " + response);
             document.querySelector("#token").value = response;
         })
@@ -139,6 +132,7 @@ $(document).ready(function () {
             method: "GET",
             dataType: "json",
         }).done(function (response) {
+            console.log( response);
             $('#userTokenStatus').html(JSON.stringify(response));
         })
 
