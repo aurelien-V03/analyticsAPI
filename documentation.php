@@ -37,7 +37,6 @@
         <main>
             <h1> documentation </h1>
             <p> L’objectif de ce API REST permettant à un utilisateur d’envoyer des données dans une base de données MySQL relatives à la navigation d’un utilisateur sur un site web</p>
-            <br>
             <p> Ci-dessous vous trouverez la liste de fonctionnalités offerte par l’application ainsi que les paramètres à envoyer ainsi que le header et les réponses en retour</p>
 
  
