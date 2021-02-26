@@ -47,6 +47,9 @@ class TokenService {
         $jwt_is_valid = false;
 
         $jwt_array = explode('.',$jwt); // Array qui contient la structure du token ( [0] = header / [1] = payload / [2] = signature)
+        // Si le tableau as moins de 3 cases alors le token contien une erreur.
+        if( count($jwt_array) < 3 ) { return  $jwt_is_valid; }
+
         $jwt_decode_header = base64_decode($jwt_array[0]);
         $jwt_decode_payload = base64_decode($jwt_array[1]);
 
@@ -72,6 +75,7 @@ class TokenService {
     public function checkjwtTokenExpirationDate($token){
        
         $jwt_array = explode('.',$token); // Array qui contient la structure du token ( [0] = header / [1] = payload / [2] = signature)
+        if( count($jwt_array) < 3 ) { return  false; }
         $jwt_decode_payload = base64_decode($jwt_array[1]);
         $array_payload =json_decode( $jwt_decode_payload);
         $expiration_date =  $array_payload->{'exp'};
@@ -89,6 +93,18 @@ class TokenService {
     //@token : le token a vérifier
     public function tokenValid($token){
         return $this->checkjwtTokenExpirationDate($token) && $this->checkjwtTokenSignature($token);
+    }
+
+
+    // Tester la validité du token de l'utilisateur
+    public function testValiditeToken( $numeroToken) {
+        $tokenSignatureValid =  $this->checkjwtTokenSignature( $numeroToken );
+            
+        $tokenStillValid = $this->checkjwtTokenExpirationDate($numeroToken);
+           
+        $tokenSignatureStatus = $tokenSignatureValid ? "signature valide" : "signature incorrecte";
+        $tokenExpirationStatus = $tokenStillValid ? "token toujours valide" : "token perime";
+        return  array("status_signature" => $tokenSignatureStatus, 'status_expiration' => $tokenExpirationStatus);
     }
   
 }

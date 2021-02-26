@@ -12,36 +12,39 @@ $request_method = $_SERVER["REQUEST_METHOD"];
 $headerHTTP =  apache_request_headers();
 $numeroToken = $headerHTTP['Authorization'];
 
+function jsonRetour( $valeurRetour) {
+    header('Content-Type: application/json');
+    echo json_encode( $valeurRetour, JSON_PRETTY_PRINT);
+}
+
+
+
 switch($request_method) {
+
     case 'GET':
         // Obtenir une transaction selon l'id
-        if (isset($_GET['id']) &&  $_GET['call'] == 'getpageana' && $token->tokenValid($numeroToken )) {
+        if (isset($_GET['id']) &&  $_GET['call'] == 'getpageana'  ) {
+            if ( $token->tokenValid($numeroToken) == false ) {  jsonRetour(  array(" code :" => "Erreur avec le Token")) ;  break;}
             $mysql_connection->getPageanaById($_GET['id']); break;
         }
 
         // Obtenir toutes les transactions
-        if ($_GET['call'] == 'getpageana' && $token->tokenValid($numeroToken)) {
+        if ($_GET['call'] == 'getpageana' ) {
+            if ( $token->tokenValid($numeroToken) == false ) {  jsonRetour(  array(" code :"  =>"Erreur avec le Token")) ;  break;}
             $mysql_connection->getPageana(); break;
         }
 
         // Tester la validité du token de l'utilisateur
         if ($_GET['call'] == 'getToken') {
-            $tokenSignatureValid =  $token->checkjwtTokenSignature( $numeroToken );
-            $tokenStillValid = $token->checkjwtTokenExpirationDate($numeroToken);
-           
-            $tokenSignatureStatus = $tokenSignatureValid ? "signature valide" : "signature incorrecte";
-            $tokenExpirationStatus = $tokenStillValid ? "token toujours valide" : "token perime";
-
-            $result = array("status_signature" => $tokenSignatureStatus, 'status_expiration' => $tokenExpirationStatus);
-
-            header('Content-Type: application/json');
-            echo json_encode($result, JSON_PRETTY_PRINT);
+            $result = $token->testValiditeToken( $numeroToken);
+            jsonRetour( $result );
             break;
         }
 
      case 'DELETE': 
         // Suppresion d'une transaction
-        if ($_GET['call'] == 'deletepageana' && isset($_GET['id']) && $token->tokenValid($numeroToken) ) {
+        if ($_GET['call'] == 'deletepageana' && isset($_GET['id'])  ) {
+            if ( $token->tokenValid($numeroToken) == false ) {  jsonRetour(  array(" code :"  => "Erreur avec le Token")) ;  break;}
             $mysql_connection->deletePageana( $_GET['id'] );  break;
         }
 
@@ -61,16 +64,16 @@ switch($request_method) {
         parse_str(file_get_contents('php://input'), $_PUT);
 
         // Insertion d'une pageana
-        if (  $token->tokenValid( $numeroToken ) && isset($_PUT['ip']) && isset($_PUT['id_utilisateur']) && isset($_PUT['url'])  && isset($_PUT['libelle_action']) && $_PUT['call'] == 'insertpageana'  ) {
-           $mysql_connection->postPageana( $_PUT['ip'] , $_PUT['id_utilisateur'], $_PUT['url'], 1, 1, $_PUT['libelle_action']);  
+        if ( isset($_PUT['ip']) && isset($_PUT['id_utilisateur']) && isset($_PUT['url'])  && isset($_PUT['libelle_action']) && $_PUT['call'] == 'insertpageana'  ) {
+            if ( $token->tokenValid($numeroToken) == false ) {  jsonRetour(  array(" code :"  => "Erreur avec le Token")) ;  break;}
+            $mysql_connection->postPageana( $_PUT['ip'] , $_PUT['id_utilisateur'], $_PUT['url'], $_PUT['code_ecran'] ,  $_PUT['code_action'], $_PUT['libelle_action']);  
         }
         break;
     
            
     // Requête invalide
     default:
-        header('Content-Type: application/json');
-        echo json_encode(" Erreur Requête. ", JSON_PRETTY_PRINT);
+        jsonRetour( " Erreur Requête. " );
         break;
 }
 

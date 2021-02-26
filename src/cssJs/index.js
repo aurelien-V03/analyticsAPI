@@ -85,7 +85,7 @@ $(document).ready(function () {
         $.ajax({
             url: ' ./server/api.php',
             type: 'PUT',
-            data: 'ip=' + $('#ip').val() + ' &id_utilisateur=' + $('#id_utilisateur').val() + '&url=' + $('#url').val() + '&libelle_action=' + $('#libelle_action').val() + '&call=' + description,
+            data: 'ip=' + $('#ip').val() + ' &id_utilisateur=' + $('#id_utilisateur').val() + '&url=' + $('#url').val() + '&code_action=' + $('#code_action').val() +  '&code_ecran=' + $('#code_ecran').val() +    '&libelle_action=' + $('#libelle_action').val() + '&call=' + description,
             dataType: 'json'
         })
             .done(function (response) {

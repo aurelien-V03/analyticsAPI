@@ -55,18 +55,38 @@ class db_connection {
         $this->affichageJson($responseJson);
     }
 
+
+
+
+
+    
+
+    // 
+    public function testPostPageana($ip, $id_utilisateur, $url, $code_ecran, $code_action, $libelle_action) {
+        $result = true;  
+        // On vérifie le type de donner en integer ( pour respecter l(integriter de la base de donner ))
+        if (  gettype( intval($id_utilisateur ) )  != "integer" || gettype( intval($code_ecran)) != "integer" || gettype( intval($code_action) ) != "integer" ) { $result = false; }   
+
+        return $result;
+    }
+
+
     // ajoute une occurrence dans la table pageana
     public function postPageana($ip, $id_utilisateur, $url, $code_ecran, $code_action, $libelle_action) {
-        $request = "INSERT INTO pageana(ip,id_utilisateur,url,code_ecran,code_action,libelle_action,date_enreg) VALUES(?,?,?,?,?,?,?)";
-        $request_prepared = $this->mysql_connection->prepare($request);
+        $responseJson =  array(  'status' => 'Erreur de saissi'    );
 
-        // Si la requete a été executée avec succes 
-        if ($request_prepared->execute(array($ip, $id_utilisateur, $url, $code_ecran, $code_action, $libelle_action, date("j/ n/ Y")))) {
-            $responseJson =  array(  'status' => 'Ajout dans la table pageana avec succes'    );
-        }
-        // Si la requete n'a pas pu etre executée
-        else {
-            $responseJson =  array( 'status' => 'Erreur lors de l\'ajout dans la table pageana'   );
+        if($this->testPostPageana($ip, $id_utilisateur, $url, $code_ecran, $code_action, $libelle_action) ) {
+            $request = "INSERT INTO pageana(ip,id_utilisateur,url,code_ecran,code_action,libelle_action,date_enreg) VALUES(?,?,?,?,?,?,?)";
+            $request_prepared = $this->mysql_connection->prepare($request);
+
+            // Si la requete a été executée avec succes 
+            if ($request_prepared->execute(array($ip, $id_utilisateur, $url, $code_ecran, $code_action, $libelle_action, date("j/ n/ Y")))) {
+                $responseJson =  array(  'status' => 'Ajout dans la table pageana avec succes'    );
+            }
+            // Si la requete n'a pas pu etre executée
+            else {
+                $responseJson =  array( 'status' => 'Erreur lors de l\'ajout dans la table pageana'   );
+            }
         }
         $this->affichageJson($responseJson);
     }
@@ -103,16 +123,32 @@ class db_connection {
     }
 
 
+    // vérification des donner sais lors de l'inscriptions utilisateur
+    public function testInscription( $nom, $password) {
+        $result = true; 
+        // les saisis de nom et mot de pass sont trops court
+        if ( strlen( $password) < 4 || strlen( $nom) < 4 ) { $result = false; } 
+        // On vérifie le type de donenr saisi
+        if (  gettype( $password)  != "string" || gettype( $nom) != "string" ) { $result = false; }   
+  
+        return $result;
+    }
+
     // On souhaite ajouter une utilisateur en BDD. On verifie dabord si il nexiste pas déja grace à son nom.
     // Si il n'existe pas on l'ajoutes alors
     public function inscriptionsUtilisateur($nom, $password){
-        $resultat = " Utilisateur déja existant. ";
-        if(! $this->compteExistant($nom) ) {
-            $request_prepared = $this->mysql_connection->prepare("INSERT INTO user(nom, password)  VALUES(?,?)");
-            if ($request_prepared->execute(array($nom, $password ) )) { 
-                $resultat = " Utilisateur Ajouter. ";
-            } 
-        }  
+        $resultat = " Erreur dans l'injection de donner. ";
+        if( $this->testInscription( $nom, $password) ) { 
+            $resultat = " Utilisateur déja existant. ";
+            if(! $this->compteExistant($nom) ) {
+                $request_prepared = $this->mysql_connection->prepare("INSERT INTO user(nom, password)  VALUES(?,?)");
+                if ($request_prepared->execute(array($nom, $password ) )) { 
+                    $resultat = " Utilisateur Ajouter. ";
+                } 
+            }  
+
+        }
+        $resultat= array("retour" => $resultat);
          $this->affichageJson( $resultat ); 
     }
 
