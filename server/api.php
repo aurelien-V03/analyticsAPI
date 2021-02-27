@@ -1,6 +1,6 @@
 <?php
 include_once('db_connect.php');
-include_once('../tokenJwt.php');
+include_once('tokenJwt.php');
 
 $mysql_connection = new db_connection();
 $token = new TokenService();
