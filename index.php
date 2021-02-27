@@ -121,7 +121,7 @@
             </div>
 
             <div class="col-lg-2 col-md-2 col-xs-2 col-sm-2">
-              <label for="url"> code_ecran:</label>
+              <label for="url"> url :</label>
               <input class="form-control" type="text" name="url" id="url">
             </div>
 
